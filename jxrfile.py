@@ -1362,13 +1362,13 @@ if __name__ == "__main__":
     type = file.read(2)
     file.seek(0)
     try:
-        if ordw(type[0:1]) == 0x574d:
+        if ordw(type[0:2]) == 0x574d:
             jxr = JXRCodestream(file, 0)
             jxr.parse()
-        elif ordw(type[0:1]) == 0x4949:
+        elif ordw(type[0:2]) == 0x4949:
             jxr = JXRFile(file, 0)
             jxr.parse()
-        elif ordw(type[0:1]) == 0x4d4d:
+        elif ordw(type[0:2]) == 0x4d4d:
             jxr = JXRFile(file, 1)
             jxr.parse()
         else:

@@ -34,9 +34,9 @@ class JP2Box:
 
     def new_box(self, description):
         if self.indent == 0:
-            self.print_indent("%-8s: New Box: %s" % (str(self.offset - self.hdrsize), description), False)
+            self.print_indent("%-8s: New Box: %s " % (str(self.offset - self.hdrsize), description), False)
         else:
-            self.print_indent("%-8s: Sub Box: %s" % (str(self.offset - self.hdrsize), description), False)
+            self.print_indent("%-8s: Sub Box: %s " % (str(self.offset - self.hdrsize), description), False)
         self.indent += 1
 
     def end_box(self):

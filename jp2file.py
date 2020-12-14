@@ -938,7 +938,7 @@ def parse_cref_box(box, buf):
     # size = buffer[4:8]
     type = buf[8:12]
     if type == "flst":
-        box.new_box("\"%s\"" % (type))
+        box.new_box("\"%s\"" % type)
         parse_flst_box(box, buf[12:len(buf)])
         box.end_box()
     else:
@@ -2135,13 +2135,13 @@ def superbox_hook(box, id, length):
             else:
                 type = box.infile.read(2)
                 box.infile.seek(box.offset)
-            if ordw(type[0:1]) == 0x574d:
+            if ordw(type[0:2]) == 0x574d:
                 jxr = JXRCodestream(box.infile, 1)
                 jxr.parse()
-            elif ordw(type[0:1]) == 0xffd8:
+            elif ordw(type[0:2]) == 0xffd8:
                 cs = JPGCodestream(indent=box.indent + 1, hook=superbox_hook)
                 cs.stream_parse(box.infile, box.offset)
-            elif ordw(type[0:1]) == 0xff10:
+            elif ordw(type[0:2]) == 0xff10:
                 cs = JXSCodestream(indent=box.indent + 1)
                 cs.stream_parse(box.infile, box.offset)
             else:

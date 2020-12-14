@@ -44,13 +44,13 @@ class JP2Codestream(BaseCodestream):
         self.offset = startpos
 
         # Read SOC Marker
-        if (len(self.buffer) - self.pos < 2) or ordw(self.buffer[self.pos + 0:self.pos + 1]) != 0xff4f:
+        if (len(self.buffer) - self.pos < 2) or ordw(self.buffer[self.pos + 0:self.pos + 2]) != 0xff4f:
             raise RequiredMarkerMissing("SOC")
         self.pos += 2
         self.read_SOC()
 
         # Read SIZ Marker
-        if (len(self.buffer) - self.pos < 2) or ordw(self.buffer[self.pos + 0:self.pos + 1]) != 0xff51:
+        if (len(self.buffer) - self.pos < 2) or ordw(self.buffer[self.pos + 0:self.pos + 2]) != 0xff51:
             raise RequiredMarkerMissing("SIZ")
         self.pos += 2
         self.read_SIZ()
@@ -99,7 +99,7 @@ class JP2Codestream(BaseCodestream):
         self._print_indent("Overhead  : %d bytes (%d%%)" % (oh, 100 * oh / l))
 
     def load_marker(self, file, marker):
-        mrk = ordw(marker[0:1])
+        mrk = ordw(marker[0:2])
         if 0xff30 <= mrk <= 0xff3f:
             self.buffer = marker
         elif mrk in [0xff93, 0xff4f, 0xffd9, 0xff92]:
@@ -135,7 +135,7 @@ class JP2Codestream(BaseCodestream):
 
         # Read SOC Marker
         self.load_buffer(file)
-        if ordw(self.buffer[self.pos + 0:self.pos + 1]) != 0xff4f:
+        if ordw(self.buffer[self.pos + 0:self.pos + 2]) != 0xff4f:
             raise RequiredMarkerMissing("SOC")
         self.pos += 2
         self.read_SOC()
@@ -143,7 +143,7 @@ class JP2Codestream(BaseCodestream):
 
         # Read SIZ Marker
         self.load_buffer(file)
-        if ordw(self.buffer[self.pos + 0:self.pos + 1]) != 0xff51:
+        if ordw(self.buffer[self.pos + 0:self.pos + 2]) != 0xff51:
             raise RequiredMarkerMissing("SIZ")
         self.pos += 2
         self.read_SIZ()
@@ -162,7 +162,7 @@ class JP2Codestream(BaseCodestream):
             self.load_buffer(file)
 
         # Read Tile Parts
-        while len(self.buffer) >= 2 and ordw(self.buffer[0:1]) == 0xff90:
+        while len(self.buffer) >= 2 and ordw(self.buffer[0:2]) == 0xff90:
             self.pos += 2
             self.read_SOT()
             self.offset += len(self.buffer)
@@ -331,7 +331,7 @@ class JP2Codestream(BaseCodestream):
             raise InvalidSizedMarker("SIZ")
 
         # Read Csiz
-        components = (size - 38) / 3
+        components = (size - 38) // 3
         self.csiz = ordw(self.buffer[self.pos + 36:self.pos + 38])
         if self.csiz != components:
             raise InvalidSizedMarker("SIZ")
