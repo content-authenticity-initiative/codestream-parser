@@ -118,7 +118,7 @@ def convert_hex(buf, indent=0, sec_indent=-1, plain_text=False, single_line=True
                 line = ""
                 buff = "  "
             line += " " * indent
-        buff += str(buf[i]) if 32 <= ordb(buf[i]) < 127 else "."
+        buff += chrb(buf[i]) if 32 <= ordb(buf[i]) < 127 else "."
         line += "%02x " % (ordb(buf[i]))
     if plain_text:
         line += "   " * ((16 - (len(buf) % 16)) % 16) + buff
@@ -225,9 +225,15 @@ class Buffer:
 if sys.version_info < (3,):
     def ordb(buf):
         return struct.unpack('B', buf)[0]
+
+    def chrb(i):
+        return i
 else:
     def ordb(buf):
         return buf
+
+    def chrb(i):
+        return struct.pack('B', i)
 
 
 def ordw(buf):
