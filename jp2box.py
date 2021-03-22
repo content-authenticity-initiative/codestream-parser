@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 JPEG codestream-parser (All-JPEG Codestream/File Format Parser Tools)
@@ -89,7 +91,7 @@ class JP2Box:
         elif len(length) < 4:
             raise UnexpectedEOF()
         length = ordl(length)
-        id = self.infile.read(4)
+        id = self.infile.read(4).decode('ascii')
         if len(id) < 4:
             raise UnexpectedEOF
         self.offset += 8

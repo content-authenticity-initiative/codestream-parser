@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 JPEG codestream-parser (All-JPEG Codestream/File Format Parser Tools)
@@ -255,7 +257,7 @@ class JPGCodestream(BaseCodestream):
         self._end_marker()
 
     def parse_APP(self, idx):
-        if idx == 11 and self.buffer[4:6] == "JP":
+        if idx == 11 and self.buffer[4:6] == b'JP':
             self._new_marker("APP11", "JPEG XT Extension Marker")
             segment = BoxSegment(self.buffer, self.offset)
             self.boxlist.addBoxSegment(segment)

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 JPEG codestream-parser (All-JPEG Codestream/File Format Parser Tools)
@@ -118,7 +120,7 @@ def convert_hex(buf, indent=0, sec_indent=-1, plain_text=False, single_line=True
                 line = ""
                 buff = "  "
             line += " " * indent
-        buff += chrb(buf[i]) if 32 <= ordb(buf[i]) < 127 else "."
+        buff += chr(buf[i]) if 32 <= ordb(buf[i]) < 127 else "."
         line += "%02x " % (ordb(buf[i]))
     if plain_text:
         line += "   " * ((16 - (len(buf) % 16)) % 16) + buff

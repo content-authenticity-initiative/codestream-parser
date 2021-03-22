@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 JPEG codestream-parser (All-JPEG Codestream/File Format Parser Tools)
@@ -2106,7 +2108,7 @@ def parse_json_box(box, buf):
     s = buf
     if s[len(s) - 1] == "\0":
         s = s[:len(s) - 2]
-    box.print_indent(s)
+    box.print_indent(s.decode('utf-8'))
 
 
 def parse_superbox(box, boxtype):

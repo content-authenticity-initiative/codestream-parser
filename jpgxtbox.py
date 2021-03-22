@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 """
 JPEG codestream-parser (All-JPEG Codestream/File Format Parser Tools)
 See LICENCE.txt for copyright and licensing conditions.
 """
 from __future__ import print_function, division
-from io import StringIO
+from io import BytesIO
 
 from jp2utils import ordw, ordl, ordq, chrl, chrq, InvalidBoxSize, BoxSizesInconsistent
 from jp2box import JP2Box
@@ -84,7 +86,7 @@ class BoxList:
             # offset = sortedlist[0].offset
             for seg in sortedlist:
                 buf = buf + seg.buffer
-            string_stream = StringIO(buf)
-            box = JP2Box(None, string_stream)
+            bytes_stream = BytesIO(buf)
+            box = JP2Box(None, bytes_stream)
             box.indent = indent
             return box
