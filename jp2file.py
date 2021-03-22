@@ -2141,7 +2141,9 @@ def superbox_hook(box, id, length):
                 jxr = JXRCodestream(box.infile, 1)
                 jxr.parse()
             elif ordw(type[0:2]) == 0xffd8:
-                cs = JPGCodestream(indent=box.indent + 1, hook=superbox_hook)
+                cs = JPGCodestream(
+                    indent=box.indent + 1, hook=superbox_hook,
+                    buffer_print_limit=buffer_print_limit)
                 cs.stream_parse(box.infile, box.offset)
             elif ordw(type[0:2]) == 0xff10:
                 cs = JXSCodestream(indent=box.indent + 1)
@@ -2375,12 +2377,15 @@ def superbox_hook(box, id, length):
 
 
 ignore_codestream = False
+buffer_print_limit = 256
 if __name__ == "__main__":
     # Read Arguments
-    args, files = getopt.getopt(sys.argv[1:], "C", "ignore-codestream")
+    args, files = getopt.getopt(sys.argv[1:], "CB:", ["ignore-codestream", "buffer-print-limit="])
     for (o, a) in args:
         if o in ("-C", "--ignore-codestream"):
             ignore_codestream = True
+        if o in ("-B", "--buffer-print-limit"):
+            buffer_print_limit = int(a)
 
     if len(files) != 1:
         print("Usage: [OPTIONS] %s FILE" % (sys.argv[0]))
@@ -2400,7 +2405,7 @@ if __name__ == "__main__":
             jp2 = JP2Codestream()
             jp2.stream_parse(file, 0)
         elif ordw(type) == 0xffd8:
-            jpg = JPGCodestream(hook=superbox_hook)
+            jpg = JPGCodestream(hook=superbox_hook, buffer_print_limit=buffer_print_limit)
             jpg.stream_parse(file, 0)
         elif ordw(type) == 0xff10:
             jxs = JXSCodestream()

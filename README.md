@@ -21,6 +21,8 @@ their contents.
   the JPEG XS file format. Additionally supported flags:
 
     ```-C```, ```--ignore-codestream```: Don't parse the Codestream boxes.
+    ```-B <limit>```, ```--buffer-print-limit (limit)```: Output hex dump of
+    application boxes larger than the specified size (default 256 bytes)
 
 * ```jp2box.py```
 

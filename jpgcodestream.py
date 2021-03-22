@@ -19,7 +19,7 @@ class JPGCodestream(BaseCodestream):
     JPEG Codestream class.
     """
 
-    def __init__(self, indent=0, hook=None, offset=0):
+    def __init__(self, indent=0, hook=None, offset=0, buffer_print_limit=256):
         super(JPGCodestream, self).__init__(indent=indent)
         assert hook is not None
         self.datacount = 0
@@ -32,6 +32,7 @@ class JPGCodestream(BaseCodestream):
         self.superhook = hook
         self.buffer = None
         self.pos = 0
+        self.buffer_print_limit = buffer_print_limit
 
     def load_marker(self, file, marker):
         mrk = ordw(marker[0:2])
@@ -266,7 +267,7 @@ class JPGCodestream(BaseCodestream):
                 box.parse(self.superhook)
         else:
             self._new_marker(("APP%x" % idx), ("Application marker #%d" % idx))
-            if len(self.buffer) < 256:
+            if len(self.buffer) < self.buffer_print_limit:
                 print_hex(self.buffer)
         self._end_marker()
 
