@@ -413,7 +413,7 @@ def print_desctag(buf, indent):
 def parse_icc(indent, buf):
     indent += 1
     print_indent("ICC profile size        : %d bytes" % ordl(buf[0:4]), indent)
-    print_indent("Preferred CMM type      : %d" % ordl(buf[0:8]), indent)
+    print_indent("Preferred CMM type      : %d" % ordl(buf[4:8]), indent)
     print_indent("ICC major version       : %d" % ordb(buf[8]), indent)
     print_indent("ICC minor version       : %d" % ordb(buf[9]), indent)
     print_indent("Profile class           : %s" % buf[12:16].decode('ascii'), indent)
