@@ -273,7 +273,7 @@ class JPGCodestream(BaseCodestream):
 
     def parse_COM(self):
         self._new_marker("COM", "Comment marker")
-        if len(self.buffer) < 256:
+        if len(self.buffer) < self.buffer_print_limit:
             print_hex(self.buffer)
         self._end_marker()
 
@@ -322,7 +322,7 @@ class JPGCodestream(BaseCodestream):
             self._end_marker()
         elif marker >= 0xff01:
             self._new_marker("???", "Unknown marker %04x" % marker)
-            if len(self.buffer) < 256:
+            if len(self.buffer) < self.buffer_print_limit:
                 print_hex(self.buffer)
             self._end_marker()
 

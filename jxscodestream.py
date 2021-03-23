@@ -95,7 +95,7 @@ def decode_Level(level):
 #
 
 class JXSCodestream(BaseCodestream):
-    def __init__(self, indent=0, offset=0):
+    def __init__(self, indent=0, offset=0, buffer_print_limit=256):
         super(JXSCodestream, self).__init__(indent=indent)
         self.datacount = 0
         self.bytecount = 0
@@ -131,6 +131,7 @@ class JXSCodestream(BaseCodestream):
         self.nlt = "None"
         self.extent = "Unspecified"
         self.indent = 0
+        self.buffer_print_limit = buffer_print_limit
 
     def load_marker(self, file, marker):
         mrk = ordw(marker)
@@ -922,7 +923,7 @@ class JXSCodestream(BaseCodestream):
                 self.parse_CAP()
             else:
                 self._new_marker("???", "Unknown marker %04x" % marker_value)
-                if len(self.buffer) < 256:
+                if len(self.buffer) < self.buffer_print_limit:
                     print_hex(self.buffer)
                 self._end_marker()
             self.load_buffer(file)
