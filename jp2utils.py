@@ -119,7 +119,7 @@ def convert_hex(buf, indent=0, sec_indent=-1, plain_text=False, single_line=True
                 indent = sec_indent
                 line = ""
                 buff = "  "
-            line += " " * indent
+            line += "  " * indent
         buff += chr(buf[i]) if 32 <= ordb(buf[i]) < 127 else "."
         line += "%02x " % (ordb(buf[i]))
     if plain_text:
@@ -137,7 +137,7 @@ def print_hex(buf, indent=0, sec_indent=-1, plain_text=True):
 
 
 def print_indent(buf, indent=0, nl=True):
-    print(" " * indent + buf, end='\n' if nl else '')
+    print("  " * indent + buf, end='\n' if nl else '')
 
 
 def ieee_float_to_float(data):
