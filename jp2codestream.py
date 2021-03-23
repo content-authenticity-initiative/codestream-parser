@@ -526,7 +526,7 @@ class JP2Codestream(BaseCodestream):
             if subbands % 2 != 0:
                 raise InvalidSizedMarker("QCD")
             subbands /= 2
-        for i in range(subbands):
+        for i in range(int(subbands)):
             mantissa = 1.0
             if sqcd & 0x1f == 1 or sqcd & 0x1f == 2:
                 spqcd = ordw(self.buffer[self.pos + i * 2 + 3:self.pos + i * 2 + 5])
@@ -962,7 +962,7 @@ class JP2Codestream(BaseCodestream):
             len -= 2
         if len % l != 0:
             raise InvalidSizedMarker("MCT")
-        count = len / l
+        count = int(len / l)
         self.print_header("Number of entries", str(count))
         for i in range(count):
             if type & 12 == 0:
@@ -1094,7 +1094,9 @@ class JP2Codestream(BaseCodestream):
             s = "unknown"
         self.print_header("Registration", s)
         if reg == 1:
-            self.print_header("Comment", self.buffer[self.pos + 4:self.pos + self.size])
+            self.print_header(
+                "Comment",
+                self.buffer[self.pos + 4:self.pos + self.size].decode('utf-8'))
         else:
             self.print_header("Comment", "...")
         self._end_marker()
