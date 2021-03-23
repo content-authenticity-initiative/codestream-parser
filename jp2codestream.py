@@ -525,8 +525,8 @@ class JP2Codestream(BaseCodestream):
         if sqcd & 0x1f == 1 or sqcd & 0x1f == 2:
             if subbands % 2 != 0:
                 raise InvalidSizedMarker("QCD")
-            subbands /= 2
-        for i in range(int(subbands)):
+            subbands = int(subbands / 2)
+        for i in range(subbands):
             mantissa = 1.0
             if sqcd & 0x1f == 1 or sqcd & 0x1f == 2:
                 spqcd = ordw(self.buffer[self.pos + i * 2 + 3:self.pos + i * 2 + 5])
@@ -571,7 +571,7 @@ class JP2Codestream(BaseCodestream):
         if sqcc & 0x1f == 1 or sqcc & 0x1f == 2:
             if subbands % 2 != 0:
                 raise InvalidSizedMarker("QCC")
-            subbands /= 2
+            subbands = int(subbands / 2)
         for i in range(subbands):
             mantissa = 1.0
             if sqcc & 0x1f == 1 or sqcc & 0x1f == 2:
