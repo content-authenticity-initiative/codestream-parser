@@ -1211,7 +1211,7 @@ class JP2Codestream:
             s = "unknown"
         self.print_header("Registration", s)
         if reg == 1:
-            self.print_header("Comment", self.buffer[self.pos + 4:self.pos + self.size])
+            self.print_header("Comment", self.buffer[self.pos + 4:self.pos + self.size].decode('utf-8'))
         else:
             self.print_header("Comment", "...")
         self.end_marker()

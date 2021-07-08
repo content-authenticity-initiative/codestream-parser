@@ -41,9 +41,9 @@ class JP2Box:
         
     def new_box(self, description):
         if self.indent == 0:
-            self.print_indent("%-8s: New Box: %s" % (str(self.offset - self.hdrsize),description),0)
+            self.print_indent("%-8s: New Box: %s " % (str(self.offset - self.hdrsize),description),0)
         else:
-            self.print_indent("%-8s: Sub Box: %s" % (str(self.offset - self.hdrsize),description),0)
+            self.print_indent("%-8s: Sub Box: %s " % (str(self.offset - self.hdrsize),description),0)
         self.indent += 1
 
     def end_box(self):
@@ -96,7 +96,7 @@ class JP2Box:
         elif len(length) < 4:
             raise UnexpectedEOF()
         length = ordl(length)
-        id     = self.infile.read(4)
+        id     = self.infile.read(4).decode('ascii')
         if len(id) < 4:
             raise UnexpectedEOF
         self.offset += 8

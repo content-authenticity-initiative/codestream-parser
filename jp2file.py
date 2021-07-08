@@ -93,7 +93,7 @@ def parse_rreq_box(box,buffer):
     for i in range(nsf):
         sf = ordw(buffer[off:off+2])
         off += 2
-        box.print_indent(" Standard flag :",0)
+        box.print_indent(" Standard flag : ",0)
         if sf == 0:
             print("writer could not fully understand file")
         elif sf == 1:
@@ -340,7 +340,7 @@ def parse_filetype_box(box,buffer):
     minv = ordl(buffer[4:8])
     box.print_indent("Minor version: %d" % (minv))
     # Print CL (Compatibility List)
-    box.print_indent("Compatibility:",0)
+    box.print_indent("Compatibility: ",0)
     clsize = (len(buffer) - 8) / 4
     for i in range(clsize):
         offset = i * 4 + 8
@@ -397,12 +397,12 @@ def parse_image_header_box(box,buffer):
         box.print_indent("Components           : %d" % ordw(buffer[8:10]))
         box.print_indent("Bits Per Component   : %d" % 
               ((ord(buffer[10]) & 0x7f) + 1))
-        box.print_indent("Signed Components    :",0)
+        box.print_indent("Signed Components    : ",0)
         if ord(buffer[10]) & 0x80:
             print("yes")
         else:
             print("no")
-        box.print_indent("Compression Type     :",0)
+        box.print_indent("Compression Type     : ",0)
         if ord(buffer[11]) == 0:
             print("uncompressed")
         elif ord(buffer[11]) == 1:
@@ -428,15 +428,15 @@ def parse_image_header_box(box,buffer):
         elif ord(buffer[11]) == 12:
             print("JPEG XS")
         else:
-            print("unknown (%s)" % ord(buffer[11]))
-        box.print_indent("Unknown Colourspace  :",0)
+            print("unknown (%d)" % ord(buffer[11]))
+        box.print_indent("Unknown Colourspace  : ",0)
         if ord(buffer[12]) == 0:
             print("no")
         elif ord(buffer[12]) == 1:
             print("yes")
         else:
             print("invalid value")
-        box.print_indent("Intellectual Property:",0)
+        box.print_indent("Intellectual Property: ",0)
         if ord(buffer[13]) == 0:
             print("no")
         elif ord(buffer[13]) == 1:
@@ -479,7 +479,7 @@ def parse_colorspec_box(box,buffer):
         else:
             method = ord(buffer[0])
             offset = 3
-        box.print_indent("Colour Specification Method:",0)
+        box.print_indent("Colour Specification Method: ",0)
         if method == 1:
             print("enumerated colourspace")
         elif method == 2:
@@ -503,7 +503,7 @@ def parse_colorspec_box(box,buffer):
             if len(buffer) != 7 and cs != 19 and cs != 14:
                 box.print_indent("invalid box")
                 return
-            box.print_indent("Colourspace  :",0)
+            box.print_indent("Colourspace          :",0)
             if cs == 16:
                 print("sRGB")
             elif cs == 17:
@@ -933,7 +933,7 @@ def parse_cref_box(box,buffer):
     size = buffer[4:8]
     type = buffer[8:12]
     if type == "flst":
-        box.new_box("\"%s\"" % (type))
+        box.new_box("\"%s\"" % type)
         parse_flst_box(box,buffer[12:len(buffer)])
         box.end_box
     else:
@@ -1174,7 +1174,7 @@ def parse_hdlr_box(box,buffer):
     print("Handler reference box")
 
     box.print_versflags(buffer)
-    htyp = buffer[8:12]
+    htyp = buffer[8:12].decode('ascii')
     if htyp == "vide":
         htyp = "video track"
     elif htyp == "soun":

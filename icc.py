@@ -356,13 +356,13 @@ def print_sf32(buffer,indent):
         
 def print_tag(buffer,size,indent):
     sign = buffer[0:4];
-    print_indent("Tag type: %s" % sign,indent)
+    print_indent("Tag type: %s" % sign.decode('ascii'),indent)
     print_indent("Reserved: %d" % readlong(buffer[4:8]),indent)
     if sign == "desc":
         size = readlong(buffer[8:12])
-        print_indent("Profile description: %s" % buffer[12:12+size-1],indent)
+        print_indent("Profile description: %s" % buffer[12:12+size-1].decode('ascii'),indent)
     elif sign == "text":
-        print_indent("Text: %s" % buffer[8:len(buffer)-1],indent)
+        print_indent("Text: %s" % buffer[8:len(buffer)-1].decode('ascii'),indent)
     elif sign == "XYZ ":
         count = (len(buffer) - 8) / 12
         off   = 8
@@ -398,7 +398,7 @@ def print_tag(buffer,size,indent):
 
 def print_desctag(buffer,indent):
     size = readlong(buffer[8:12])
-    print_indent("Profile description: %s" % buffer[12:12+size])
+    print_indent("Profile description: %s" % buffer[12:12+size].decode('ascii'))
 
     
     
@@ -408,12 +408,12 @@ def parse_icc(indent,buffer):
     print_indent("Preferred CMM type      : %d" % readlong(buffer[0:8]),indent)
     print_indent("ICC major version       : %d" % ord(buffer[8]),indent)
     print_indent("ICC minor version       : %d" % ord(buffer[9]),indent)
-    print_indent("Profile class           : %s" % buffer[12:16],indent)
-    print_indent("Canonical input space   : %s" % buffer[16:20],indent)
-    print_indent("Profile connection space: %s" % buffer[20:24],indent)
+    print_indent("Profile class           : %s" % buffer[12:16].decode('ascii'),indent)
+    print_indent("Canonical input space   : %s" % buffer[16:20].decode('ascii'),indent)
+    print_indent("Profile connection space: %s" % buffer[20:24].decode('ascii'),indent)
     print_indent("Creation date :",indent)
     print_datetime(buffer[24:36],indent+1)
-    print_indent("Profile signature       : %s" % buffer[36:40],indent)
+    print_indent("Profile signature       : %s" % buffer[36:40].decode('ascii'),indent)
     print_indent("Platform singature      : %s" % readsignature(buffer[40:44]),indent)
     print_indent("Profile flags           : 0x%08x" % readlong(buffer[44:48]),indent)
     print_indent("Device manufacturer     : %s" % readsignature(buffer[48:52]),indent)
@@ -442,7 +442,7 @@ def parse_icc(indent,buffer):
     for i in range(count):
         offset    = readlong(buffer[off+4:off+8])
         size      = readlong(buffer[off+8:off+12])
-        print_indent("ICC tag %s at offset %d size %d:" % (buffer[off:off+4],offset,size),indent+1)
+        print_indent("ICC tag %s at offset %d size %d:" % (buffer[off:off+4].decode('ascii'),offset,size),indent+1)
         print_tag(buffer[offset:offset+size],size,indent+2)
         off      += 12
     
