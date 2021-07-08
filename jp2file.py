@@ -1878,8 +1878,8 @@ def parse_jxpl_box(box,buffer):
     box.print_indent("JPEG Profile and Level box")
     profile = ordw(buffer[0:2])
     level   = ordw(buffer[2:4])
-    box.print_indent("Profile           : %s" % decode_Profile(profile))
-    box.print_indent("Level             : %s" % decode_Level(level))
+    box.print_indent("Profile           : %s" % jxscodestream.decode_Profile(profile))
+    box.print_indent("Level             : %s" % jxscodestream.decode_Level(level))
     
 def parse_bmdm_box(box,buffer):
     box.print_indent("JPEG Buffer Model Description box")
@@ -2282,8 +2282,8 @@ def superbox_hook(box,id,length):
             parse_FTRX_box(box,buffer)
         elif id == 'AMUL':
             parse_AMUL_box(box,buffer)
-        elif id == 'jxvs':
-            parse_jxvs_box(box,buffer)
+        elif id == 'jxvi':
+            parse_jxvi_box(box,buffer)
         elif id == 'jxpl':
             parse_jxpl_box(box,buffer)
         elif id == 'bmdm':
