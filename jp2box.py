@@ -96,7 +96,7 @@ class JP2Box:
         elif len(length) < 4:
             raise UnexpectedEOF()
         length = ordl(length)
-        id     = self.infile.read(4).decode('ascii')
+        id     = self.infile.read(4)
         if len(id) < 4:
             raise UnexpectedEOF
         self.offset += 8
@@ -141,7 +141,7 @@ class JP2Box:
                 return
             if len(header) == 1:
                 id = header[0].decode('utf-8')
-                self.new_box("\"%s\"" % (id))
+                self.new_box("\"%s\"" % id)
                 hook(self,id,"all up to EOF")
                 self.end_box()
                 continue
@@ -152,7 +152,7 @@ class JP2Box:
             self.target   = self.infile.tell() + length
 
             # Call hook
-            self.new_box("\"%s\"" % (id))
+            self.new_box("\"%s\"" % id)
             hook(self,id,"%d" % length)
 
             self.infile.seek(self.target)
