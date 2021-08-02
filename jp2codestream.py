@@ -96,8 +96,8 @@ class JP2Codestream:
         # Read SOC Marker
         if len(self.buffer) - self.pos < 2:
             raise RequiredMarkerMissing("SOC")
-        if ord(self.buffer[self.pos + 0]) != 0xff or \
-           ord(self.buffer[self.pos + 1]) != 0x4f:
+        if self.buffer[self.pos + 0] != 0xff or \
+           self.buffer[self.pos + 1] != 0x4f:
             raise RequiredMarkerMissing("SOC")
         self.pos = self.pos + 2
         self.read_SOC()
@@ -105,16 +105,16 @@ class JP2Codestream:
         # Read SIZ Marker
         if len(self.buffer) - self.pos < 2:
             raise RequiredMarkerMissing("SIZ")
-        if ord(self.buffer[self.pos + 0]) != 0xff or \
-           ord(self.buffer[self.pos + 1]) != 0x51:
+        if self.buffer[self.pos + 0] != 0xff or \
+           self.buffer[self.pos + 1] != 0x51:
             raise RequiredMarkerMissing("SIZ")
         self.pos = self.pos + 2
         self.read_SIZ()
         
         # Read other header markers
         while len(self.buffer) - self.pos >= 2 and \
-              ord(self.buffer[self.pos + 1]) != 0x90:
-            if ord(self.buffer[self.pos + 0]) != 0xff:
+              self.buffer[self.pos + 1] != 0x90:
+            if self.buffer[self.pos + 0] != 0xff:
                 raise MisplacedData()
             if len(self.buffer) - self.pos < 4:
                 raise UnexpectedEOC()
@@ -122,15 +122,15 @@ class JP2Codestream:
 
         # Read Tile Parts
         while len(self.buffer) - self.pos >= 2 and \
-              ord(self.buffer[self.pos + 0]) == 0xff and \
-              ord(self.buffer[self.pos + 1]) == 0x90:
+              self.buffer[self.pos + 0] == 0xff and \
+              self.buffer[self.pos + 1] == 0x90:
             self.pos = self.pos + 2
             self.read_SOT()
 
             # Read Next Marker
             while len(self.buffer) - self.pos >= 2 and \
-                  ord(self.buffer[self.pos + 1]) != 0x93: # SOD
-                if ord(self.buffer[self.pos + 0]) != 0xff:
+                  self.buffer[self.pos + 1] != 0x93: # SOD
+                if self.buffer[self.pos + 0] != 0xff:
                     raise MisplacedData()
                 if len(self.buffer) - self.pos < 4:
                     raise UnexpectedEOC()
@@ -155,16 +155,16 @@ class JP2Codestream:
         self.print_indent("Overhead  : %d bytes (%d%%)" % (oh, 100 * oh / l))
 
     def load_marker(self, file, marker):
-        mrk    = ((ord(marker[0]) << 8) +
-                  (ord(marker[1]) << 0))
+        mrk    = ((marker[0] << 8) +
+                  (marker[1] << 0))
         if (mrk >= 0xff30 and mrk <= 0xff3f):
             self.buffer = marker
         elif (mrk == 0xff93 or mrk == 0xff4f or mrk == 0xffd9 or mrk == 0xff92):
             self.buffer = marker
         elif (mrk >= 0xff4f and mrk <= 0xff93):
             size   = file.read(2)
-            ln     = ((ord(size[0]) << 8) +
-                      (ord(size[1]) << 0))
+            ln     = ((size[0] << 8) +
+                      (size[1] << 0))
             if (ln < 2):
                 raise InvalidSizedMarker("Marker too short")
             self.buffer = marker + size + file.read(ln-2)
@@ -192,8 +192,8 @@ class JP2Codestream:
 
         # Read SOC Marker
         self.load_buffer(file)
-        if ord(self.buffer[self.pos + 0]) != 0xff or \
-           ord(self.buffer[self.pos + 1]) != 0x4f:
+        if self.buffer[self.pos + 0] != 0xff or \
+           self.buffer[self.pos + 1] != 0x4f:
             raise RequiredMarkerMissing("SOC")
         self.pos = self.pos + 2
         self.read_SOC()
@@ -201,8 +201,8 @@ class JP2Codestream:
 
         # Read SIZ Marker
         self.load_buffer(file)
-        if ord(self.buffer[self.pos + 0]) != 0xff or \
-           ord(self.buffer[self.pos + 1]) != 0x51:
+        if self.buffer[self.pos + 0] != 0xff or \
+           self.buffer[self.pos + 1] != 0x51:
             raise RequiredMarkerMissing("SIZ")
         self.pos = self.pos + 2
         self.read_SIZ()
@@ -211,8 +211,8 @@ class JP2Codestream:
         # Read other header markers
         self.load_buffer(file)
         while len(self.buffer) - self.pos >= 2 and \
-              ord(self.buffer[self.pos + 1]) != 0x90:
-            if ord(self.buffer[self.pos + 0]) != 0xff:
+              self.buffer[self.pos + 1] != 0x90:
+            if self.buffer[self.pos + 0] != 0xff:
                 raise MisplacedData()
             if len(self.buffer) - self.pos < 4:
                 raise UnexpectedEOC()
@@ -222,8 +222,8 @@ class JP2Codestream:
 
         # Read Tile Parts
         while len(self.buffer) >= 2 and \
-              ord(self.buffer[0]) == 0xff and \
-              ord(self.buffer[1]) == 0x90:
+              self.buffer[0] == 0xff and \
+              self.buffer[1] == 0x90:
             self.pos = self.pos + 2
             self.read_SOT()
             self.offset = self.offset + len(self.buffer)
@@ -231,8 +231,8 @@ class JP2Codestream:
 
             # Read Next Marker
             while len(self.buffer) >= 2 and \
-                  ord(self.buffer[self.pos + 1]) != 0x93: # SOD
-                if ord(self.buffer[self.pos + 0]) != 0xff:
+                  self.buffer[self.pos + 1] != 0x93: # SOD
+                if self.buffer[self.pos + 0] != 0xff:
                     raise MisplacedData()
                 if len(self.buffer) - self.pos < 4:
                     raise UnexpectedEOC()
@@ -262,11 +262,11 @@ class JP2Codestream:
             if len(byte) != 1:
                 raise UnexpectedEOC()
             count = count + 1
-            if (ord(byte[0]) == 0xff):
+            if (byte[0] == 0xff):
                 marker = file.read(1)
                 if len(marker) == 1:
                     count = count + 1
-                    if ord(marker[0]) >= 0x90:
+                    if marker[0] >= 0x90:
                         self.offset = self.offset + count-2
                         self.print_data(count-2)
                         self.load_marker(file,byte+marker)
@@ -283,8 +283,8 @@ class JP2Codestream:
         while 1:	    
             count = 0
             while len(self.buffer) - self.pos >= 2 and \
-                  (ord(self.buffer[self.pos + 0]) != 0xff or \
-                   ord(self.buffer[self.pos + 1]) < 0x90):
+                  (self.buffer[self.pos + 0] != 0xff or \
+                   self.buffer[self.pos + 1] < 0x90):
                 self.pos = self.pos + 1
                 count = count + 1
 
@@ -308,9 +308,9 @@ class JP2Codestream:
             raise InvalidSizedMarker("SGco")
 
         self.print_header("Progression Order",
-                          self.progression_order(ord(self.buffer[self.pos + 0])))
+                          self.progression_order(self.buffer[self.pos + 0]))
         self.print_header("Layers",str(ordw(self.buffer[self.pos + 1:self.pos + 3])))
-        trafo = ord(self.buffer[self.pos + 3])
+        trafo = self.buffer[self.pos + 3]
         if trafo == 0:
             s = "none"
         elif trafo == 1:
@@ -322,7 +322,7 @@ class JP2Codestream:
         elif trafo == 6:
             s = "array and wavelet based transform"
         else:
-            s = str(ord(self.buffer[self.pos + 3]))
+            s = str(self.buffer[self.pos + 3])
         self.print_header("Multiple Component Transformation", s)
         self.pos = self.pos + 4
 
@@ -330,15 +330,15 @@ class JP2Codestream:
         if len(self.buffer) - self.pos < 5 + precincts:
             raise InvalidSizedMarker("SPco")
     
-        levels = ord(self.buffer[self.pos + 0])
+        levels = self.buffer[self.pos + 0]
         if levels <= 32:
                 self.print_header("Decomposition Levels", str(levels))
         else:
                 self.print_header("Downsampling factor style", str(levels))
         self.print_header("Code-block size", "%dx%d" % \
-                          (1 << (ord(self.buffer[self.pos + 1]) + 2),
-                           1 << (ord(self.buffer[self.pos + 2]) + 2)))
-        x = ord(self.buffer[self.pos + 3])
+                          (1 << (self.buffer[self.pos + 1] + 2),
+                           1 << (self.buffer[self.pos + 2] + 2)))
+        x = self.buffer[self.pos + 3]
         if x & 0x01:
             s = "yes"
         else:
@@ -380,15 +380,15 @@ class JP2Codestream:
             else:
                 s = "no"
             self.print_header("Mixing of FBCOT and EBCOT",s)
-        if ord(self.buffer[self.pos + 4]) == 0x00:
+        if self.buffer[self.pos + 4] == 0x00:
             s = "9-7 irreversible"
-        elif ord(self.buffer[self.pos + 4]) == 0x01:
+        elif self.buffer[self.pos + 4] == 0x01:
             s = "5-3 reversible"
         else:
             s = "abritrary ATK specified transform"
         self.print_header("Wavelet Transformation", s)
         for i in range(precincts):
-            x = ord(self.buffer[self.pos + i + 5])
+            x = self.buffer[self.pos + i + 5]
             self.print_header("Precinct #%d Size Exponents" % (i),
                               "%dx%d" % (x & 0x0f, x >> 4))
         self.pos = self.pos + 5 + precincts
@@ -402,7 +402,7 @@ class JP2Codestream:
         size = ordw(self.buffer[self.pos + 0:self.pos + 2])
         if size < 20 or size > 16403:
             raise InvalidSizedMarker("NSI")
-        ndim = ord(self.buffer[self.pos + 2])
+        ndim = self.buffer[self.pos + 2]
         zsiz = ordl(self.buffer[self.pos + 3:self.pos + 7])
         osiz = ordl(self.buffer[self.pos + 7:self.pos + 11])
         tsiz = ordl(self.buffer[self.pos + 11:self.pos + 15])
@@ -413,7 +413,7 @@ class JP2Codestream:
         self.print_header("Tile Depth","%d" % tsiz)
         self.print_header("Tile Depth Offset","%d" % tosz)
         for i in range(size - 19):
-            self.print_header("Z Sample Separation for component %d" % i,"%d" % ord(self.buffer[self.pos + 19 + i]))
+            self.print_header("Z Sample Separation for component %d" % i,"%d" % self.buffer[self.pos + 19 + i])
         self.pos = self.pos + size
         self.end_marker()
         
@@ -503,10 +503,10 @@ class JP2Codestream:
         self.print_header("Components", str(components))
 
         # Read Components
-        for i in range(0, components):
-            ssiz  = ord(self.buffer[self.pos + 38 + i * 3])
-            xrsiz = ord(self.buffer[self.pos + 39 + i * 3])
-            yrsiz = ord(self.buffer[self.pos + 40 + i * 3])
+        for i in range(0, int(components)):
+            ssiz  = self.buffer[self.pos + 38 + i * 3]
+            xrsiz = self.buffer[self.pos + 39 + i * 3]
+            yrsiz = self.buffer[self.pos + 40 + i * 3]
             self.print_header("Component #%d Depth" % (i), "%d" % ((ssiz & 0x7f) + 1))
             if ssiz & 0x80:
                 s = "yes"
@@ -530,11 +530,11 @@ class JP2Codestream:
         self.print_header("Tile",str(ordw(self.buffer[self.pos + 2:self.pos + 4])))
         length = ordl(self.buffer[self.pos + 4:self.pos + 8])
         self.print_header("Length", str(length))
-        self.print_header("Index", str(ord(self.buffer[self.pos + 8])))
-        if ord(self.buffer[self.pos + 9]) == 0:
+        self.print_header("Index", str(self.buffer[self.pos + 8]))
+        if self.buffer[self.pos + 9] == 0:
             s = "unknown"
         else:
-            s = str(ord(self.buffer[self.pos + 9]))
+            s = str(self.buffer[self.pos + 9])
         self.print_header("Tile-Parts", s)
         self.end_marker()
         self.pos = self.pos + 10
@@ -543,7 +543,7 @@ class JP2Codestream:
         self.new_marker("COD", "Coding style default")
         if self.size < 3:
             raise InvalidSizedMarker("COD")
-        cod = ord(self.buffer[self.pos + 2])
+        cod = self.buffer[self.pos + 2]
         if cod & 0x01:
             s = "no"
         else:
@@ -585,7 +585,7 @@ class JP2Codestream:
 
         # Print Ccoc
         if self.csiz <= 256:
-            component = ord(self.buffer[self.pos + 0])
+            component = self.buffer[self.pos + 0]
             self.pos  = self.pos + 1
         else:
             component = ordw(self.buffer[self.pos + 0:self.pos + 2])
@@ -593,7 +593,7 @@ class JP2Codestream:
         self.print_header("Component", str(component))
 
         # Print Scoc
-        prec = ord(self.buffer[self.pos + 0])
+        prec = self.buffer[self.pos + 0]
         self.pos = self.pos + 1
         if prec == 0:
             s = "default"
@@ -607,7 +607,7 @@ class JP2Codestream:
         if prec == 0:
             if self.csiz <= 256 and self.size != 9 or \
                self.csiz >  256 and self.size != 10:
-                raise InvalidMarkerSize("COC")
+                raise InvalidSizedMarker("COC")
         precincts = self.size - 9
         if self.csiz > 256:
             precincts = precincts - 1
@@ -618,7 +618,7 @@ class JP2Codestream:
         self.new_marker("QCD", "Quantization default")
         if self.size < 4:
             raise InvalidSizedMarker("QCD")
-        sqcd = ord(self.buffer[self.pos + 2])
+        sqcd = self.buffer[self.pos + 2]
         if sqcd & 0x1f == 0:
             s = "none"
         elif sqcd & 0x1f == 1:
@@ -652,7 +652,7 @@ class JP2Codestream:
                 self.print_header("Mantissa #%d" % (i), str(spqcd & 0x7ff))
                 exponent = spqcd >> 11
             else:
-                spqcd = ord(self.buffer[self.pos + i + 3])
+                spqcd = self.buffer[self.pos + i + 3]
                 exponent = spqcd >> 3
             self.print_header("Exponent #%d" % (i), str(exponent))
             self.print_header("Delta    #%d" % (i), str(mantissa * pow(2.0,-exponent)))
@@ -664,13 +664,13 @@ class JP2Codestream:
         if self.size < 4:
             raise InvalidSizedMarker("QCC")
         if self.csiz <= 256:
-            index = ord(self.buffer[self.pos + 2])
+            index = self.buffer[self.pos + 2]
             self.pos = self.pos + 3
         else:
             index = ordw(self.buffer[self.pos + 2:self.pos + 4])
             self.pos = self.pos + 4
         self.print_header("Index", str(index))
-        sqcc = ord(self.buffer[self.pos + 0])
+        sqcc = self.buffer[self.pos + 0]
         self.pos = self.pos + 1
         if sqcc & 0x1f == 0:
             s = "none"
@@ -699,7 +699,7 @@ class JP2Codestream:
                 self.print_header("Mantissa #%d" % (i), str(spqcd & 0x7ff))
                 exponent = spqcd >> 11
             else:
-                spqcd = ord(self.buffer[self.pos + 0])
+                spqcd = self.buffer[self.pos + 0]
                 self.pos = self.pos + 1
                 exponent = spqcd >> 3
             self.print_header("Exponent #%d" % (i), str(exponent))
@@ -710,13 +710,13 @@ class JP2Codestream:
         self.new_marker("RGN", "Region-of-interest")
         # Print Crgn
         if self.csiz <= 256:
-            cmp = ord(self.buffer[self.pos + 2])
+            cmp = self.buffer[self.pos + 2]
             self.pos = self.pos + 3
         else:
             cmp = ordw(self.buffer[self.pos + 2:self.pos + 4])
             self.pos = self.pos + 4
         self.print_header("Component", str(cmp))
-        method = ord(self.buffer[self.pos + 0])
+        method = self.buffer[self.pos + 0]
         if method == 0:
             s = "implicit"
         elif method == 1:
@@ -728,7 +728,7 @@ class JP2Codestream:
         self.pos = self.pos + 1
         self.print_header("Style", s)
         self.print_header("Implicit ROI Shift",
-                          str(ord(self.buffer[self.pos + 0])))
+                          str(self.buffer[self.pos + 0]))
         self.pos = self.pos + 1
         self.end_marker()
 
@@ -747,9 +747,9 @@ class JP2Codestream:
         self.pos = self.pos + 2
         for i in range(num):
             self.print_header("Resolution Level Index #%d (Start)" % (i),
-                              str(ord(self.buffer[self.pos])))
+                              str(self.buffer[self.pos]))
             if self.csiz <= 256:
-                rspoc = ord(self.buffer[self.pos + 1])
+                rspoc = self.buffer[self.pos + 1]
                 self.pos = self.pos + 2
             else:
                 rspoc = ordw(self.buffer[self.pos + 1:self.pos + 3])
@@ -758,9 +758,9 @@ class JP2Codestream:
             lyepoc = ordw(self.buffer[self.pos + 0:self.pos + 2])
             self.print_header("Layer Index #%d (End)" % (i), str(lyepoc))
             self.print_header("Resolution Level Index #%d (End)" % (i),
-                              str(ord(self.buffer[self.pos + 2])))
+                              str(self.buffer[self.pos + 2]))
             if self.csiz <= 256:
-                cepoc = ord(self.buffer[self.pos + 3])
+                cepoc = self.buffer[self.pos + 3]
                 if cepoc == 0:
                     cepoc = 256
                 self.pos = self.pos + 4
@@ -770,7 +770,7 @@ class JP2Codestream:
                     cepoc = 16384
                 self.pos = self.pos + 5
             self.print_header("Component Index #%d (End)" % (i), str(cepoc))
-            po = self.progression_order(ord(self.buffer[self.pos]))
+            po = self.progression_order(self.buffer[self.pos])
             self.print_header("Progression Order #%d" % (i), po)
             self.pos = self.pos + 1
         self.end_marker()
@@ -779,7 +779,7 @@ class JP2Codestream:
         self.new_marker("PPM", "Packed packet headers, main header")
         if self.size < 3:
             raise InvalidSizedMarker("PPM")
-        self.print_header("Index Zppm", str(ord(self.buffer[self.pos + 2])))
+        self.print_header("Index Zppm", str(self.buffer[self.pos + 2]))
         self.print_header("Marker Length Lppm", str(self.size))
         self.end_marker()
         self.pos = self.pos + self.size
@@ -788,7 +788,7 @@ class JP2Codestream:
         self.new_marker("PPT", "Packed packet headers, tile-part header")
         if self.size < 3:
             raise InvalidSizedMarker("PPT")
-        self.print_header("Index", str(ord(self.buffer[self.pos + 2])))
+        self.print_header("Index", str(self.buffer[self.pos + 2]))
         self.print_header("Contents", "")
         self.flush_marker()
         restlen = self.size - 3
@@ -816,8 +816,8 @@ class JP2Codestream:
         self.new_marker("TLM", "Tile-part length")
         if self.size < 4:
             raise InvalidSizedMarker("TLM")
-        self.print_header("Index", str(ord(self.buffer[self.pos + 2])))
-        stlm = ord(self.buffer[self.pos + 3]) >> 4
+        self.print_header("Index", str(self.buffer[self.pos + 2]))
+        stlm = self.buffer[self.pos + 3] >> 4
         st = stlm & 0x03
         sp = (stlm >> 2) & 0x1
         if st == 3:
@@ -854,7 +854,7 @@ class JP2Codestream:
             if st == 0:
                 ttlm = "in order"
             if st == 1:
-                ttlm = str(ord(self.buffer[self.pos + 0]))
+                ttlm = str(self.buffer[self.pos + 0])
                 self.pos = self.pos + 1
             elif st == 2:
                 ttlm = str(ordw(self.buffer[self.pos + 0:self.pos + 2]))
@@ -873,7 +873,7 @@ class JP2Codestream:
         self.new_marker("PLM", "Packet length, main header")
         if self.size < 3:
             raise InvalidSizedMarker("PLM")
-        self.print_header("Index", str(ord(self.buffer[self.pos + 2])))
+        self.print_header("Index", str(self.buffer[self.pos + 2]))
         self.pos = self.pos + 3
         self.size = self.size - 3
         self.print_header("Length", str(self.size))
@@ -884,7 +884,7 @@ class JP2Codestream:
         self.new_marker("PLT", "Packet length, tile-part header")
         if self.size < 3:
             raise InvalidSizedMarker("PLT")
-        self.print_header("Index Zplt", str(ord(self.buffer[self.pos + 2])))
+        self.print_header("Index Zplt", str(self.buffer[self.pos + 2]))
         self.print_header("Marker size Lplt", "%d bytes" % (self.size))
         self.end_marker()
         self.pos = self.pos + self.size
@@ -916,11 +916,11 @@ class JP2Codestream:
         self.print_header("Number of generated components",str(nbcd))
         self.pos = self.pos + 4
         for i in range(count):
-                if ord(self.buffer[self.pos]) & (1 << 7):
+                if self.buffer[self.pos] & (1 << 7):
                         self.print_header("Component %d sign" % i,"signed")
                 else:
                         self.print_header("Component %d sign" % i,"unsigned")
-                self.print_header("Component %d Bit Depth" % i,str(1 + (ord(self.buffer[self.pos]) & 0x7f)))
+                self.print_header("Component %d Bit Depth" % i,str(1 + (self.buffer[self.pos] & 0x7f)))
                 self.pos += 1
         self.end_marker()
 
@@ -928,13 +928,13 @@ class JP2Codestream:
         self.new_marker("MCO", "Multiple component transform ordering")
         if self.size < 3:
             raise InvalidSizedMarker("MCO")
-        nmco = ord(self.buffer[self.pos + 2])
+        nmco = self.buffer[self.pos + 2]
         if self.size != nmco + 3:
             raise InvalidSizedMarker("MCO")
         self.print_header("Number of component collections","%d" % nmco)
         self.pos += 3
         for i in range(nmco):
-                self.print_header("MCC collection %d" % i,str(ord(self.buffer[self.pos])))
+                self.print_header("MCC collection %d" % i,str(self.buffer[self.pos]))
                 self.pos += 1
         self.end_marker()
 
@@ -944,7 +944,7 @@ class JP2Codestream:
            raise InvalidSizedMarker("MCC")
         zmcc = 	ordw(self.buffer[self.pos + 2:self.pos + 4])
         self.print_header("Concatenation index",str(zmcc))
-        imcc =  ord(self.buffer[self.pos + 4])
+        imcc =  self.buffer[self.pos + 4]
         self.print_header("Reference index",str(imcc))
         self.pos += 5
         if zmcc == 0:
@@ -954,7 +954,7 @@ class JP2Codestream:
             self.print_header("Number of collections",str(qmcc))
             self.pos += 4
         for i in range(qmcc):
-                ctp = ord(self.buffer[self.pos])
+                ctp = self.buffer[self.pos]
                 if ctp & 3 == 0:
                     s = "array based dependency transformation"
                 elif ctp & 3 == 1:
@@ -980,7 +980,7 @@ class JP2Codestream:
                             incom = ordw(self.buffer[self.pos + 0:self.pos + 2])
                             self.pos += 2
                         else:
-                            incom = ord(self.buffer[self.pos])
+                            incom = self.buffer[self.pos]
                             self.pos += 1
                         self.print_header("Collection %d input component %d" % (i,j),str(incom))
                 mmcc = 	ordw(self.buffer[self.pos + 0:self.pos + 2])
@@ -998,42 +998,42 @@ class JP2Codestream:
                             outcom = ordw(self.buffer[self.pos + 0:self.pos + 2])
                             self.pos += 2
                         else:
-                            outcom = ord(self.buffer[self.pos])
+                            outcom = self.buffer[self.pos]
                             self.pos += 1
                         self.print_header("Collection %d output component %d" % (i,j),str(outcom))
                 if ctp & 3 == 3:
-                        self.print_header("Number of decomposition levels",ord(self.buffer[self.pos]))
-                        if ord(self.buffer[self.pos + 1]) == 0:
+                        self.print_header("Number of decomposition levels",self.buffer[self.pos])
+                        if self.buffer[self.pos + 1] == 0:
                                 s = "null"
                         else:
-                                s = "in MCT marker %d" % ord(self.buffer[self.pos + 1])
+                                s = "in MCT marker %d" % self.buffer[self.pos + 1]
                         self.print_header("Collection %d offset vector" % i,s)
-                        if ord(self.buffer[self.pos + 2]) == 0:
+                        if self.buffer[self.pos + 2] == 0:
                                 s = "9-7 irreversible"
-                        elif ord(self.buffer[self.pos + 2]) == 1:
+                        elif self.buffer[self.pos + 2] == 1:
                                 s = "5-3 reversible"
                         else:
-                                s = "defined in ATK segment %d " % ord(self.buffer[self.pos + 2])
+                                s = "defined in ATK segment %d " % self.buffer[self.pos + 2]
                         self.print_header("Wavelet filter used",s)
                         self.pos += 3
                         self.print_header("Collection %d reference grid offset" % i,
                                 ordl(self.buffer[self.pos + 0:self.pos + 4]))
                         self.pos += 4
                 else:
-                        if ord(self.buffer[self.pos]) & 1:
+                        if self.buffer[self.pos] & 1:
                                 s = "reversible"
                         else:
                                 s = "irreversible"
                         self.print_header("Collection %d transformation is" % i,s)
-                        if ord(self.buffer[self.pos + 1]) == 0:
+                        if self.buffer[self.pos + 1] == 0:
                                 s = "null"
                         else:
-                                s = "in MCT marker %d" % ord(self.buffer[self.pos + 1])
+                                s = "in MCT marker %d" % self.buffer[self.pos + 1]
                         self.print_header("Collection %d offset vector" % i,s)
-                        if ord(self.buffer[self.pos + 2]) == 0:
+                        if self.buffer[self.pos + 2] == 0:
                                 s = "identity"
                         else:
-                                s = "in MCT marker %d" % ord(self.buffer[self.pos + 2])
+                                s = "in MCT marker %d" % self.buffer[self.pos + 2]
                         self.print_header("Collection %d matrix" % i,s)
                         self.pos += 3
         self.end_marker()
@@ -1045,9 +1045,9 @@ class JP2Codestream:
             raise InvalidSizedMarker("MCT")
         zmct =  ordw(self.buffer[self.pos + 2:self.pos + 4])
         self.print_header("Concatenation index",str(zmct))
-        imct =	ord(self.buffer[self.pos + 5])
+        imct =	self.buffer[self.pos + 5]
         self.print_header("Reference index",str(imct))
-        type =	ord(self.buffer[self.pos + 4])
+        type =	self.buffer[self.pos + 4]
         if type & 3 == 0:
             s = "Dependency transform"
         elif type & 3 == 1:
@@ -1115,7 +1115,7 @@ class JP2Codestream:
         else:
             s = "for component %d" % cnlt
         self.print_header("Non-Linearity defined",s)
-        bdnlt = ord(self.buffer[self.pos + 4])
+        bdnlt = self.buffer[self.pos + 4]
         if bdnlt & 0x80:
             s = "signed"
             bdnlt -= 0x80
@@ -1123,7 +1123,7 @@ class JP2Codestream:
             s = "unsigned"
         self.print_header("Output sign",s)
         self.print_header("Output bit depth",str(bdnlt + 1))
-        tnlt = ord(self.buffer[self.pos + 5])
+        tnlt = self.buffer[self.pos + 5]
         if tnlt == 0:
             s = "none"
         elif tnlt == 1:
@@ -1137,21 +1137,21 @@ class JP2Codestream:
         self.print_header("Non-Linearity type",s)
         self.pos += 6
         if tnlt == 1:
-            e = (ord(self.buffer[self.pos + 0]) << 16) + \
-                (ord(self.buffer[self.pos + 1]) <<  8) + \
-                (ord(self.buffer[self.pos + 2]) <<  0)
-            l = (ord(self.buffer[self.pos + 3]) << 16) + \
-                (ord(self.buffer[self.pos + 4]) <<  8) + \
-                (ord(self.buffer[self.pos + 5]) <<  0)
-            t = (ord(self.buffer[self.pos + 6]) << 16) + \
-                (ord(self.buffer[self.pos + 7]) <<  8) + \
-                (ord(self.buffer[self.pos + 8]) <<  0)
-            a = (ord(self.buffer[self.pos + 9]) << 16) + \
-                (ord(self.buffer[self.pos +10]) <<  8) + \
-                (ord(self.buffer[self.pos +11]) <<  0)
-            b = (ord(self.buffer[self.pos +12]) << 16) + \
-                (ord(self.buffer[self.pos +13]) <<  8) + \
-                (ord(self.buffer[self.pos +14]) <<  0)
+            e = (self.buffer[self.pos + 0] << 16) + \
+                (self.buffer[self.pos + 1] <<  8) + \
+                (self.buffer[self.pos + 2] <<  0)
+            l = (self.buffer[self.pos + 3] << 16) + \
+                (self.buffer[self.pos + 4] <<  8) + \
+                (self.buffer[self.pos + 5] <<  0)
+            t = (self.buffer[self.pos + 6] << 16) + \
+                (self.buffer[self.pos + 7] <<  8) + \
+                (self.buffer[self.pos + 8] <<  0)
+            a = (self.buffer[self.pos + 9] << 16) + \
+                (self.buffer[self.pos +10] <<  8) + \
+                (self.buffer[self.pos +11] <<  0)
+            b = (self.buffer[self.pos +12] << 16) + \
+                (self.buffer[self.pos +13] <<  8) + \
+                (self.buffer[self.pos +14] <<  0)
             if e == 0:
                 s = "ill-defined"
             else:
@@ -1174,7 +1174,7 @@ class JP2Codestream:
             npts = ordw(self.buffer[self.pos + 0:self.pos + 2])
             dmin = ordl(self.buffer[self.pos + 2:self.pos + 6])
             dmax = ordl(self.buffer[self.pos + 6:self.pos + 10])
-            prec = ord(self.buffer[self.pos + 10])
+            prec = self.buffer[self.pos + 10]
             self.print_header("Number of points",npts)
             self.print_header("Range minimum",dmin / ((1 << 32) - 1.0))
             self.print_header("Range maximum",dmax / ((1 << 32) - 1.0))
@@ -1182,7 +1182,7 @@ class JP2Codestream:
             self.pos += 11
             for i in range(npts):
                 if prec <= 8:
-                    dt = ord(self.buffer[self.pos]) + 0
+                    dt = self.buffer[self.pos] + 0
                     s  = str(dt / ((1 << prec) - 1.0))
                     self.pos += 1
                 elif prec <= 16:
@@ -1211,7 +1211,7 @@ class JP2Codestream:
             s = "unknown"
         self.print_header("Registration", s)
         if reg == 1:
-            self.print_header("Comment", self.buffer[self.pos + 4:self.pos + self.size])
+            self.print_header("Comment", self.buffer[self.pos + 4:self.pos + self.size].decode('utf-8'))
         else:
             self.print_header("Comment", "...")
         self.end_marker()
@@ -1279,10 +1279,10 @@ class JP2Codestream:
     def read_marker(self):
         if len(self.buffer) - self.pos < 2:
             raise UnexpectedEOC()
-        if ord(self.buffer[self.pos + 0]) != 0xff:
+        if self.buffer[self.pos + 0] != 0xff:
             raise MisplacedData()
 
-        self.marker = ord(self.buffer[self.pos + 1])
+        self.marker = self.buffer[self.pos + 1]
         self.pos = self.pos + 2
 
         if self.marker >= 0x30 and self.marker <= 0x3f or \
@@ -1292,8 +1292,8 @@ class JP2Codestream:
         else:
             if len(self.buffer) - self.pos < 2:
                 raise UnexpectedEOC()
-            self.size = (ord(self.buffer[self.pos + 0]) << 8) + \
-                        (ord(self.buffer[self.pos + 1]) << 0)
+            self.size = (self.buffer[self.pos + 0] << 8) + \
+                        (self.buffer[self.pos + 1] << 0)
 
     def read_header_marker(self):
         self.read_marker()
