@@ -2037,6 +2037,44 @@ def parse_json_box(box,buffer):
         s = s[:len(s) - 2]
     box.print_indent(s.decode('utf-8'))
 
+def parse_cbor_box(box,buffer):
+    print("CBOR box")
+    box.print_indent("Data:")
+    box.print_hex(buffer)
+
+def parse_bfdb_box(box,buffer):
+    print("Embedded File Description box")
+    toggles= ord(buffer[0:1])
+    box.print_indent("TOGGLES: %s" % bin(toggles))
+    opt_start = 1 # start after the toggle
+    # read the media type
+    mediaType_len = 0
+    for i in range(opt_start,len(buffer)):
+        if ord(buffer[i:i+1]) == 0:
+            mediaType_len = i
+            break
+    mediaType = fromCString(buffer[opt_start:mediaType_len])
+    box.print_indent("Media Type: %s" % mediaType)
+    opt_start = mediaType_len+1   # reset for new start
+    # check the toggles and read name if present
+    if testBit(toggles,1):
+        fName_len = 0
+        for i in range(opt_start,len(buffer)):
+            if ord(buffer[i:i+1]) == 0:
+                fName_len = i
+                break
+        fName = fromCString(buffer[opt_start:fName_len])
+        box.print_indent("Filename: %s" % fName)
+    else:
+        box.print_indent("No Filename")
+    if testBit(toggles,2):
+        box.print_indent("File data is external")
+
+def parse_bidb_box(box,buffer):
+    print("Embedded File Data box")
+    box.print_indent("Data:")
+    box.print_hex(buffer)
+
 def parse_superbox(box,boxtype):
     print(boxtype)
     box = JP2Box(box,box.infile)
@@ -2296,6 +2334,12 @@ def superbox_hook(box,id,length):
             parse_jpvi_box(box,buffer)
         elif id == 'json':
             parse_json_box(box,buffer)
+        elif id == 'cbor':
+            parse_cbor_box(box,buffer)
+        elif id == 'bfdb':
+            parse_bfdb_box(box,buffer)
+        elif id == 'bidb':
+            parse_bidb_box(box,buffer)
         else:
             box.print_indent("(unknown box)")
             box.print_hex(buffer)    
