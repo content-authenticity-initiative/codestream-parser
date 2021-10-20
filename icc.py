@@ -8,14 +8,14 @@ import sys
 
 
 def readlong(buffer):
-    return (((ord(buffer[0])) << 24) +
-            ((ord(buffer[1])) << 16) +
-            ((ord(buffer[2])) <<  8) +
-            ((ord(buffer[3])) <<  0))
+    return (((buffer[0]) << 24) +
+            ((buffer[1]) << 16) +
+            ((buffer[2]) <<  8) +
+            ((buffer[3]) <<  0))
 
 def readshort(buffer):
-    return (((ord(buffer[0])) << 8) +
-            ((ord(buffer[1])) << 0))
+    return (((buffer[0]) << 8) +
+            ((buffer[1]) << 0))
 
 
 def s15d(num):
@@ -406,8 +406,8 @@ def parse_icc(indent,buffer):
     indent += 1
     print_indent("ICC profile size        : %d bytes" % readlong(buffer[0:4]),indent)
     print_indent("Preferred CMM type      : %d" % readlong(buffer[0:8]),indent)
-    print_indent("ICC major version       : %d" % ord(buffer[8]),indent)
-    print_indent("ICC minor version       : %d" % ord(buffer[9]),indent)
+    print_indent("ICC major version       : %d" % buffer[8],indent)
+    print_indent("ICC minor version       : %d" % buffer[9],indent)
     print_indent("Profile class           : %s" % buffer[12:16].decode('ascii'),indent)
     print_indent("Canonical input space   : %s" % buffer[16:20].decode('ascii'),indent)
     print_indent("Profile connection space: %s" % buffer[20:24].decode('ascii'),indent)

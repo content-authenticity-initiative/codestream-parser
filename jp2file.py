@@ -21,8 +21,8 @@ def parse_resolution_box(box,buffer):
     vrd = ordw(buffer[2:4])
     hrn = ordw(buffer[4:6])
     hrd = ordw(buffer[6:8])
-    vre = ord(buffer[8])
-    hre = ord(buffer[9])
+    vre = buffer[8]
+    hre = buffer[9]
     box.print_indent("Resolution: %d/%d*10^%d x %d/%d*10^%d" % \
           (hrn, hrd, hre, vrn, vrd, vre))
 
