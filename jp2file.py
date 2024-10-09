@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# $Id: jp2file.py,v 1.78 2021/05/27 16:05:57 thor Exp $
+# $Id: jp2file.py,v 1.79 2023/10/19 09:56:36 thor Exp $
 
 import getopt
 import sys
@@ -2100,13 +2100,13 @@ def superbox_hook(box,id,length):
             else:
                 type = box.infile.read(2)
                 box.infile.seek(box.offset)
-            if type[0] == 0x57 and type[1] == 0x4d:
+            if ord(type[0]) == 0x57 and ord(type[1]) == 0x4d:
                 jxr = jxrfile.JXRCodestream(box.infile,1)
                 jxr.parse()
-            elif type[0] == 0xff and type[1] == 0xd8:
+            elif ord(type[0]) == 0xff and ord(type[1]) == 0xd8:
                 cs = jpgcodestream.JPGCodestream(indent = box.indent + 1, hook = superbox_hook)
                 cs.stream_parse(box.infile,box.offset)
-            elif type[0] == 0xff and type[1] == 0x10:
+            elif ord(type[0]) == 0xff and ord(type[1]) == 0x10:
                 cs = jxscodestream.JXSCodestream(indent = box.indent + 1)
                 cs.stream_parse(box.infile,box.offset)
             else:
@@ -2367,13 +2367,13 @@ if __name__ == "__main__":
     type = file.read(2)
     file.seek(0)
     try:
-        if type[0] == 0xff and type[1] == 0x4f:
+        if ord(type[0]) == 0xff and ord(type[1]) == 0x4f:
             jp2 = jp2codestream.JP2Codestream()
             jp2.stream_parse(file,0)
-        elif type[0] == 0xff and type[1] == 0xd8:
+        elif ord(type[0]) == 0xff and ord(type[1]) == 0xd8:
             jpg = jpgcodestream.JPGCodestream()
             jpg.stream_parse(file,0)
-        elif type[0] == 0xff and type[1] == 0x10:
+        elif ord(type[0]) == 0xff and ord(type[1]) == 0x10:
             jxs = jxscodestream.JXSCodestream()
             jxs.stream_parse(file,0)
         elif ordw(type[0:2]) == 0x574d: # ord(type[0]) ==0x57 and ord(type[1]) == 0x4d:

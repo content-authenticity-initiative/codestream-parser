@@ -9,7 +9,8 @@ their contents. This also includes support for JUMBF.
   data that is not directly used for image data.
 
 * jp2file.py
-  JPEG File Format parsing. Call this script with any type of JPEG file
+  File Format parsing, supports any kind of JPEG file format (JPEG 2000,
+  JPEG, JPEG XR, JPEG XS, JPEG XT). Call this script with a JPEG file
   as argument to parse it and its codestream. This is a generic jpx
   container parser that is also aware of JPEG XR, JPEG XL with ISO boxes, 
   the JPEG XS file format and JPEGs with embedded JUMBF. Additionally supported flags:

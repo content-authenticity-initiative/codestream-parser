@@ -1348,15 +1348,15 @@ class JXRFile:
             self.parse_ifd_entry()
         if self.coffset != NotImplemented:
             self.infile.seek(self.coffset)
-            jxrc = JXRCodestream(self.file,self.indent)
-            print()
+            jxrc = JXRCodestream(self.infile,self.indent)
+            print
             self.print_position()
             self.print_indent("Codestream Contents:")
             jxrc.parse()
         if self.aoffset != NotImplemented and self.aoffset != 0:
             self.infile.seek(self.aoffset)
-            jxrc = JXRCodestream(self.file,self.indent)
-            print()
+            jxrc = JXRCodestream(self.infile,self.indent)
+            print
             self.print_position()
             self.print_indent("Codestream Alpha Plane Contents:")
             jxrc.parse()
